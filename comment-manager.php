@@ -1,0 +1,35 @@
+<?php
+/*
+Plugin Name: Comment Manager
+Plugin URI: https://
+Description: Customizable comments for WP
+Version: 1.1.0
+Author: Popart Studio
+Author URI: https://
+*/
+
+
+if (! defined('ABSPATH'))
+	exit; // Exit if accessed directly
+
+
+define("CM_ROOT_PATH", plugin_dir_path(__FILE__));
+define("CM_TEMPLATES_PATH", plugin_dir_path(__FILE__) . 'templates/');
+define("CM_ASSETS_PATH", plugin_dir_path(__FILE__) . 'assets/');
+define("CM_ASSETS_URL", plugin_dir_url(__FILE__) . 'assets/');
+define("CM_ADDONS_PATH", plugin_dir_path(__FILE__) . 'addons/');
+define("CM_ADDONS_URL", plugin_dir_url(__FILE__) . 'addons/');
+
+require_once "include/classes/class-comment-manager.php";
+require_once "include/classes/class-comment-manager-admin.php";
+
+if (is_admin() && ! wp_doing_ajax()) {
+	$cm = Comment_Manager::instance();
+	$options = $cm->getOptions();
+
+	if (! empty($options['cm_option_use_custom_template']) && $options['cm_option_use_custom_template'] == '1') {
+
+		//Adding additional filters for comments table in admin panel
+		require_once "include/admin-comments-extended.php";
+	}
+}
