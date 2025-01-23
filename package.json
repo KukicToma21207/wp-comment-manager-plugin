@@ -1,0 +1,25 @@
+{
+  "name": "comment-manager",
+  "version": "1.0.0",
+  "description": "WP Plugin for comment customization",
+  "main": "index.js",
+  "scripts": {
+    "compile:sass": "sass assets/scss:assets/css --no-source-map",
+    "watch:sass": "sass --watch assets/scss:assets/css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KukicToma21207/wp-comment-manager-plugin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KukicToma21207/wp-comment-manager-plugin/issues"
+  },
+  "homepage": "https://github.com/KukicToma21207/wp-comment-manager-plugin#readme",
+  "dependencies": {
+    "-": "^0.0.1",
+    "sass": "^1.83.4",
+    "save-dev": "^0.0.1-security"
+  }
+}

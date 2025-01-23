@@ -1,0 +1,346 @@
+
+.cm-custom-options-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(max-content, 450px));
+}
+
+.cm-custom-options-types,
+.cm-custom-options-categories {
+    display: grid;
+    grid-template-areas: 
+                "a a a"
+                "b b c"
+                "d d d"
+                "e . .";
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding-right: 100px;
+}
+
+.cm-custom-options-wrapper h3,
+h3.cm-options-title {
+    grid-area: a;
+    margin-top: 0;
+}
+
+.cm-custom-options-wrapper input[type=text] {
+    grid-area: b;
+}
+
+.cm-custom-options-wrapper input[type=button].add-button {
+    grid-area: c;
+    width: 80px;
+}
+
+.cm-custom-options-wrapper ul {
+    grid-area: d;
+}
+
+.cm-custom-options-wrapper input[type=button].remove-button {
+    grid-area: e;    
+    width: 80px;
+}
+
+ul.cm-comment-type-list, ul.cm-comment-category-list {
+    min-height: 200px;
+    overflow: hidden;
+    overflow-y: auto;
+    border: 1px solid #9e9e9e;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+ul.cm-comment-type-list li, ul.cm-comment-category-list li {
+    font-weight: 400;
+    padding: 5px;
+    cursor: pointer;
+    transition: all .3s;
+    margin: 0;
+}
+
+ul.cm-comment-type-list li:hover, ul.cm-comment-type-list li.active, ul.cm-comment-category-list li:hover, ul.cm-comment-category-list li.active {
+    background-color: #aaa;
+    transition: all .3s;
+}
+
+ul.cm-comment-type-list li.active, ul.cm-comment-category-list li.active {
+    background-color: #666;
+    color: #fff;
+}
+
+input[type = 'button'] {
+    border: 1px solid #666;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.add-button {
+    background-color: rgb(0, 160, 0);
+
+    &:hover {
+        background-color: rgb(0, 126, 0);
+    }
+}
+
+
+.remove-button {
+    background-color: rgb(160, 0, 0);
+
+    &:not([disabled = disabled]):hover {
+        background-color: rgb(126, 0, 0);
+    }
+}
+
+
+.remove-button:disabled {
+    color: #aaa;
+    border-color: #999;
+    cursor: default;
+}
+
+
+.cm-page-list-item,
+.cm-post-list-item {
+    position: relative;
+    width: 230px;
+    cursor: default;
+    padding: 3px 8px;
+    border-radius: 10px;
+    vertical-align: middle;
+    border: 1px solid #aeaeae;
+    margin-bottom: 3px;
+}
+
+.cm-page-list-item::after,
+.cm-post-list-item::after {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    content: "+";
+    text-align: center;
+    padding: 0 4px 3px 3px;
+    margin-top: 1px;
+    background-color: rgb(0,126,0);
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 16px;
+    vertical-align: middle;
+    font-weight: 700;
+    color: #fff;
+    border: 1px solid #0009;
+    cursor: pointer;
+}
+
+.cm-page-list-item:hover,
+.cm-post-list-item:hover {
+    border-color: #363636;
+    background-color: #a3a3a3;
+    color: #fff;
+    transition: background-color .3s;
+}
+
+.cm-no-pages-message,
+.cm-no-posts-message 
+{
+    color: rgb(126, 0, 0);
+}
+
+fieldset.cm-cutom-page-settings,
+fieldset.cm-cutom-post-settings {
+    position: relative;
+    border: 1px solid #363636;
+    border-radius: 5px;
+    padding: 20px 20px 10px 10px;
+    width: fit-content;
+    margin-top: 20px;
+}
+
+fieldset.cm-cutom-page-settings h4,
+fieldset.cm-cutom-post-settings h4 {
+    margin-top: 0;
+}
+
+a.cm-remove-per-page-settings,
+a.cm-remove-per-post-settings {
+    position: absolute;
+    right: -10px;
+    top: -20px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: rgb(126, 0, 0);
+    border: 1px solid rgb(100,0,0);
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .2s;
+
+    &:hover {
+        right: -13px;
+        top: -25px;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 16px;
+        border-color: rgb(126,0,0);
+        background-image: radial-gradient(circle at top left, #f66, transparent 75%);
+        box-shadow: 2px 2px 3px #36363699;
+        transition: all .2s;
+    }
+}
+
+
+.cm-addons-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.cm-addon-option {
+    text-transform: capitalize;
+}
+
+.cm-page-comment,
+.cm-post-comment {
+    margin-bottom: 20px;
+}
+
+.cm-page-comment-title-container,
+.cm-post-comment-title-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-bottom: 5px;
+}
+
+.cm-page-comment-type, .cm-page-comment-category,
+.cm-post-comment-type, .cm-post-comment-category {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-bottom: 5px;
+}
+
+.cm-page-comment-titles,
+.cm-post-comment-titles {
+    margin-bottom: 20px;
+}
+
+.cm-per-page-settings-wrapper,
+.cm-per-post-settings-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(max-content, 450px));
+}
+
+
+#cm-options-save-changes {
+    padding: 10px 20px;
+    background-color: rgb(44, 153, 255);
+    color: #fff;
+    border-color: #fff0;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: rgb(15, 92, 163);
+        transition: background-color .2s;
+    }
+
+}
+
+
+fieldset legend {
+    font-size: 18px;
+    padding: 0 10px;
+    font-weight: 700;
+    color: rgb(44, 153, 255);
+    text-transform: capitalize;
+    border: 1px solid #666;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.cm-page-addons-options:not(:has(input)) {
+    display: none;
+}
+
+.cm-comment-type-cat-update {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+input[type=button].cm-update-type-cat {
+    background-color: #fb0;
+    color: #363636;
+
+    &:hover {
+        background-color: #fd0;
+        color: #000;
+        transition: all .2s;
+    }
+
+    &.updating {
+        background-image: linear-gradient(to right, #080 0%, #0b0 50%, #080 100%);
+        background-repeat: no-repeat;
+        animation: 2s linear alternate infinite update_progress;
+        color: #000;
+        background-color: #080;
+    }
+}
+
+
+.cm-custom-tag-list {    
+    display: grid;
+    grid-template-columns: repeat(2, minmax(min-content, max-content));
+    width: fit-content;
+    row-gap: 3px;
+    column-gap: 5px;
+
+    li {
+        padding: 3px 5px;
+        border: 1px solid #363636;
+        background-color: #fff0;
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #666;
+            color: #fff;
+            transition: background-color .3s;
+        }
+
+        &.active {
+            background-color: #080;
+            color: #fff;
+
+            &.special {
+                background-color: #800;
+                cursor: default;
+            }
+        }
+    }
+}
+
+
+/* Animations */
+
+@keyframes update_progress {
+    0% {
+        background-position-x: -100px;
+        color: #000;
+    } 
+
+    50% {
+        background-position-x: center;
+        color: #f00;
+    }
+
+    100% {
+        background-position-x: 100px;
+        color: #000;
+    }
+}
