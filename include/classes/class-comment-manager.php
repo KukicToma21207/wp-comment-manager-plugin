@@ -1,6 +1,7 @@
 <?php
 
 require_once CM_ROOT_PATH . "include/helpers/helpers.php";
+require_once "class-comment-archive.php";
 
 
 /**
@@ -39,8 +40,8 @@ class Comment_Manager
 	{
 
 		//===== Define ajax calls =====
-		add_action("wp_ajax_cm_get_comments", [$this, "cmGetComments"]);
-		add_action("wp_ajax_nopriv_cm_get_comments", [$this, "cmGetComments"]);
+		add_action("wp_ajax_cm_get_comments", [Comment_Archive::instance(), "get_comments"]);
+		add_action("wp_ajax_nopriv_cm_get_comments", [Comment_Archive::instance(), "get_comments"]);
 
 		add_action("wp_ajax_cm_save_comment", [$this, "cmSaveComment"]);
 		add_action("wp_ajax_nopriv_cm_save_comment", [$this, "cmSaveComment"]);
@@ -402,151 +403,6 @@ class Comment_Manager
 	}
 
 
-	/**
-	 * Ajax function to retrive all comment
-	 * 
-	 * @param integer $comment_id ID of a comment to be returned
-	 * 
-	 * @return void Echo the result for ajax return
-	 * 
-	 * @see $_REQUEST If pagination is set it will retrive required page
-	 */
-	public function cmGetComments($comment_id = null)
-	{
-		$postID = intval($_REQUEST['post_id']);
-		$parentID = (empty($_REQUEST['parent_id']) ? 0 : intval($_REQUEST['parent_id']));
-		$filter = (empty($_REQUEST['filter']) || trim($_REQUEST['filter']) == "" ? NULL : trim($_REQUEST['filter']));
-
-		$customSettings = $this->getCustomOptionsForPost($postID);
-		$maxComments = intval($customSettings['cm_option_comments_per_page'] ?? 6);
-
-		$commentArgs = [
-			'post_id' => $postID,
-			'hierarchical' => 'threaded',
-			'count' => true
-		];
-
-		$customizedOptions = [];
-
-		if ($customSettings['settings']->type) {
-			$customizedOptions += [
-				'type' => $customSettings['settings']->type,
-			];
-		}
-
-		if (! empty($customSettings['settings']->category)) {
-			$customizedOptions += [
-				'meta_query' => [
-					[
-						'key' => 'cm_category',
-						'value' => $customSettings['settings']->category,
-					]
-				]
-			];
-
-			if ($filter) {
-				$customizedOptions['meta_query'][] =					
-				[
-					'key' => 'cm_subcategory',
-					'value' => $filter,
-				];
-			}
-		} else {
-			if ($filter) {
-				$customizedOptions += [
-					'meta_query' => [
-						[
-							'key' => 'cm_subcategory',
-							'value' => $filter,
-						]
-					]
-				];
-			}
-		}
-
-		$commentArgs += $customizedOptions;
-
-		$total = get_comments($commentArgs);
-
-		$lastPage = (($total % $maxComments) > 0 ? intval(round($total / $maxComments, PHP_ROUND_HALF_DOWN) + 1) : intval($total / $maxComments));
-		$page = (empty($_REQUEST['page']) || intval($_REQUEST['page']) == -1 ? $lastPage : intval($_REQUEST['page']));
-
-		$queryArgs = [
-			'post_id' => $postID,
-			'hierarchical' => 'threaded',
-			'order' => 'ASC',
-		];
-
-		if ($filter) {
-			$queryArgs += [
-				'meta_query' => [
-					[
-						'key' => 'cm_subcategory',
-						'value' => $filter,
-					]
-				]
-			];
-		}
-
-		if ($parentID) {
-			$queryArgs +=
-				[
-					"parent" => $parentID
-				];
-		} else {
-			$queryArgs +=
-				[
-					'number' => $maxComments,
-					'paged' => $page,
-				];
-		}
-
-		$queryArgs += $customizedOptions;
-
-		if (empty($comment_id)) {
-			$comments = get_comments($queryArgs);
-			$comments = ($parentID === 0 ? array_reverse($comments) : $comments);
-		} else {
-			$comments = [get_comment($comment_id)];
-		}
-
-		$result = "";
-
-		foreach ($comments as $single) {
-			$args = [
-				'comment' => $single,
-				'parent_id' => $parentID,
-			];
-
-			$cmComment = $this->getSingleComment($args);
-
-			if ($parentID == 0) {
-				$newTitle = $customSettings['settings']->titles->reply_form ?? ""; // 'Напиши одговор за <a class="cm-form-title-comment-link" href="cm-comment_' . $single->comment_ID . '">' . get_comment_author() . '</a>';
-				$form = $this->getCustomCommentForm(['comment_id' => $single->comment_ID, 'post_id' => $postID, 'parent_id' => $parentID, 'title' => $newTitle]);
-
-				$final = str_replace("{{comment_form}}", $form, $cmComment);
-			} else {
-				$final = $cmComment;
-			}
-
-			$result .= $final;
-		}
-
-		$pagination = ["current" => $page, "total" => $lastPage];
-
-		echo json_encode(["type" => "success", "data" => $result, "pagination" => $pagination]);
-		die();
-	}
-
-
-	/**
-	 * Render custom comment form
-	 */
-	function customCommentForm($args)
-	{
-		echo $this->getCustomCommentForm($args);
-	}
-
 
 	/**
 	 * Custom comment form
@@ -555,26 +411,32 @@ class Comment_Manager
 	 * 
 	 * @return string Rendered custom comment form
 	 */
-	protected function getCustomCommentForm($args): string
+	public function render_comment_form($args, $return = false): string
 	{
 		$result = NULL;
 
 		ob_start();
 		include(CM_TEMPLATES_PATH . "comment-form.php");
 		$result = ob_get_clean();
+		
+		if ($return) {
+				return $result;
+		} else {
+			echo $result;
+		}
 
-		return $result;
+		return "";
 	}
 
 
 	/**
-	 * Single comment
+	 * Render single comment
 	 * 
 	 * @param array Parameters
 	 * 
 	 * @return string Rendered content for single comment
 	 */
-	protected function getSingleComment($args): string
+	public function render_single_comment($args): string
 	{
 		$result = "";
 
@@ -634,7 +496,7 @@ class Comment_Manager
 			update_comment_meta($comment_id, 'cm_category', $options['settings']->category);
 		}
 
-		$result = ["type" => "success", "data" => ["comment" => $this->cmGetComments($comment_id)], "message" => "Comment saved successfully."];
+		$result = ["type" => "success", "data" => ["comment" => Comment_Archive::instance()->get_comments($comment_id)], "message" => "Comment saved successfully."];
 		return json_encode($result);
 	}
 }

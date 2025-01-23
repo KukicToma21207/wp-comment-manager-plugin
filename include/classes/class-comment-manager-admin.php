@@ -9,7 +9,7 @@ class Comment_Manager_Admin {
             $CM = Comment_Manager::instance();
 
 			add_action('template_redirect', [$CM, 'checkCommentTemplate']);
-			add_action('cm_custom_comment_form', [$CM, 'customCommentForm']);
+			add_action('cm_custom_comment_form', [$CM, 'render_comment_form']);
 
 			add_filter('cm_comments_main_title', [$CM, 'cmMainTitleFilter']);
 			add_filter('cm_comments_main_form_title', [$CM, 'cmMainFormTitleFilter'], 10, 2);
