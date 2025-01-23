@@ -1,11 +1,9 @@
 <?php
 /*
 Plugin Name: Comment Manager
-Plugin URI: https://
-Description: Customizable comments for WP
-Version: 1.1.0
-Author: Popart Studio
-Author URI: https://
+Description: WordPress plugin for comment customization
+Version: 1.0.0
+Author: Tomislav Kukic
 */
 
 
