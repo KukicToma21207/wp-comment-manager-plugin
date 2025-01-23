@@ -14,7 +14,7 @@ function load_like_scripts() {
 add_action("cm_comment_additional_info", "show_likes");
 function show_likes($args) {
     //We need to determine if this page/post should display likes addon
-    $options = Comment_Manager::instance()->getCustomOptionsForPost($args['post_id']);
+    $options = Comment_Manager::instance()->get_custom_options_for_post($args['post_id']);
     if(!empty($options['settings']) && !in_array("likes", $options['settings']->addons)){
         return;
     }

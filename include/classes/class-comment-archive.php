@@ -7,18 +7,6 @@ class Comment_Archive {
     protected static Comment_Archive|null $instance = null;
 
 
-    protected function __construct() {}
-
-    public static function instance(): Comment_Archive {
-        if ( self::$instance === null ) {
-
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-
     /**
 	 * Ajax function to retrive all comment
 	 * 
@@ -34,9 +22,9 @@ class Comment_Archive {
 		$parentID = empty($_REQUEST['parent_id']) ? 0 : intval($_REQUEST['parent_id']);
 		$filter = (empty($_REQUEST['filter']) || trim($_REQUEST['filter'])) == "" ? NULL : trim($_REQUEST['filter']);
         $CM = Comment_Manager::instance();
-        $CQ = Comment_Query::instance();
+        $CQ = new Comment_Query();
 
-		$customSettings = $CM->getCustomOptionsForPost($postID);
+		$customSettings = $CM->get_custom_options_for_post($postID);
 		$maxComments = intval($customSettings['cm_option_comments_per_page'] ?? 6);
 
 		$commentArgs = $CQ->get_query_args($postID, $customSettings['settings']->type, $customSettings['settings']->category, $filter, true);

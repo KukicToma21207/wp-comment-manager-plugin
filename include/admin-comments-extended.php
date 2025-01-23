@@ -3,7 +3,7 @@
 add_filter('admin_comment_types_dropdown', function ($param) {
 
     //Read options that we use in plugin
-    $options = Comment_Manager::instance()->getOptions();
+    $options = Comment_Manager::instance()->get_options();
     $allTypes = json_decode($options['cm_comment_types_option']);
 
     //Apply comment types that we use so we can filter by them
@@ -24,7 +24,7 @@ add_action("restrict_manage_comments", function () {
     $selectedCategory = $_REQUEST['category'];
 
     //Read options that we use in plugin
-    $options = Comment_Manager::instance()->getOptions();
+    $options = Comment_Manager::instance()->get_options();
     $allCategories = json_decode($options['cm_comment_category_option']);
 
 ?>

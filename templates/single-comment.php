@@ -34,7 +34,7 @@ $comment = $args['comment'];
                     <?php
                     if (empty($args['parent_id']) || $args['parent_id'] == 0) {
 
-                        $options = Comment_Manager::instance()->getOptions();
+                        $options = Comment_Manager::instance()->get_options();
                         $subCategories = (!empty($options['cm_comment_sub_category_option']) && Trim($options['cm_comment_sub_category_option']) != "" ? json_decode($options['cm_comment_sub_category_option']) : []);
                         $meta = get_comment_meta(intval($comment->comment_ID), 'cm_subcategory', true);
                         $subCategory = (empty($meta) || trim($meta) == "" ? "Без категорије" : $meta);

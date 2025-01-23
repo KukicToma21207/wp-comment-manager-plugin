@@ -6,7 +6,7 @@
 add_settings_field('cm_option_use_custom_template', 'Use custom template', 'cm_option_use_custom_template', 'plugin', 'plugin_main');
 function cm_option_use_custom_template()
 {
-    $options = Comment_Manager::instance()->getOptions();
+    $options = Comment_Manager::instance()->get_options();
     $option = ((empty($options['cm_option_use_custom_template']) || $options['cm_option_use_custom_template'] == '') ? 0 : 1);
     
 ?>
@@ -21,7 +21,7 @@ function cm_option_use_custom_template()
 add_settings_field('cm_option_comments_per_page', 'Comments per page', 'cm_option_comments_per_page', 'plugin', 'plugin_main');
 function cm_option_comments_per_page()
 {
-    $options = Comment_Manager::instance()->getOptions();
+    $options = Comment_Manager::instance()->get_options();
     $option = ((empty($options['cm_option_comments_per_page']) || $options['cm_option_comments_per_page'] == '') ? '' : $options['cm_option_comments_per_page']);
     
 ?>

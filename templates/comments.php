@@ -22,7 +22,7 @@ endif;
         <?php if (current_user_can('moderate_comments')): ?>
             <div class="cm-filter-wrapper">
                 <?php
-                $options = Comment_Manager::instance()->getOptions();
+                $options = Comment_Manager::instance()->get_options();
                 $subCategories = (!empty($options['cm_comment_sub_category_option']) && Trim($options['cm_comment_sub_category_option']) != "" ? json_decode($options['cm_comment_sub_category_option']) : []);
 
                 $meta = get_comment_meta(intval($comment->comment_ID), 'cm_subcategory', true);

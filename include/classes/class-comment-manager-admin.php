@@ -8,14 +8,14 @@ class Comment_Manager_Admin {
         if (! is_admin() || (is_admin() && wp_doing_ajax())) {
             $CM = Comment_Manager::instance();
 
-			add_action('template_redirect', [$CM, 'checkCommentTemplate']);
+			add_action('template_redirect', [$CM, 'check_comment_template']);
 			add_action('cm_custom_comment_form', [$CM, 'render_comment_form']);
 
-			add_filter('cm_comments_main_title', [$CM, 'cmMainTitleFilter']);
-			add_filter('cm_comments_main_form_title', [$CM, 'cmMainFormTitleFilter'], 10, 2);
-			add_filter('cm_comments_reply_form_title', [$CM, 'cmReplyFormTitleFilter'], 10, 2);
-			add_filter('cm_comments_main_placeholder', [$CM, 'cmMainFormPlaceholderFilter'], 10, 2);
-			add_filter('cm_comments_reply_placeholder', [$CM, 'cmReplyFormPlaceholderFilter'], 10, 2);
+			add_filter('cm_comments_main_title', [$CM, 'main_title_filter']);
+			add_filter('cm_comments_main_form_title', [$CM, 'main_form_title_filter'], 10, 2);
+			add_filter('cm_comments_reply_form_title', [$CM, 'reply_form_title_filter'], 10, 2);
+			add_filter('cm_comments_main_placeholder', [$CM, 'main_form_placeholder_filter'], 10, 2);
+			add_filter('cm_comments_reply_placeholder', [$CM, 'reply_form_placeholder_filter'], 10, 2);
 		}
 
 		add_action('admin_enqueue_scripts', function () {

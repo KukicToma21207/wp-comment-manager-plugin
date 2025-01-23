@@ -14,7 +14,7 @@ function cm_option_page_settings($args)
         'comment_status' => 'open'
     ]);
     $postTypes = get_post_types_by_support('comments');    
-    $options = Comment_Manager::instance()->getOptions();
+    $options = Comment_Manager::instance()->get_options();
     $option = ((empty($options['cm_option_page_settings']) || $options['cm_option_page_settings'] == '') ? "" : $options['cm_option_page_settings']);
     $commentTypes = $options['cm_comment_types_option'] ? json_decode($options['cm_comment_types_option']) : "";
     $commentCategories = $options['cm_comment_category_option'] ? json_decode($options['cm_comment_category_option']) : "";

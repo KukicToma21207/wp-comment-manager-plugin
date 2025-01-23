@@ -23,7 +23,7 @@ require_once "include/classes/class-comment-manager-admin.php";
 
 if (is_admin() && ! wp_doing_ajax()) {
 	$cm = Comment_Manager::instance();
-	$options = $cm->getOptions();
+	$options = $cm->get_options();
 
 	if (! empty($options['cm_option_use_custom_template']) && $options['cm_option_use_custom_template'] == '1') {
 

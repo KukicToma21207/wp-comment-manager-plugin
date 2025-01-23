@@ -38,19 +38,20 @@ class Comment_Manager
 	 */
 	protected function __construct()
 	{
+		$CA = new Comment_Archive();
 
 		//===== Define ajax calls =====
-		add_action("wp_ajax_cm_get_comments", [Comment_Archive::instance(), "get_comments"]);
-		add_action("wp_ajax_nopriv_cm_get_comments", [Comment_Archive::instance(), "get_comments"]);
+		add_action("wp_ajax_cm_get_comments", [ $CA, "get_comments"]);
+		add_action("wp_ajax_nopriv_cm_get_comments", [ $CA, "get_comments"]);
 
-		add_action("wp_ajax_cm_save_comment", [$this, "cmSaveComment"]);
-		add_action("wp_ajax_nopriv_cm_save_comment", [$this, "cmSaveComment"]);
+		add_action("wp_ajax_cm_save_comment", [$this, "save_comment"]);
+		add_action("wp_ajax_nopriv_cm_save_comment", [$this, "save_comment"]);
 
-		add_action("wp_ajax_cm_comment_update", [$this, "cmCommentsUpdate"]);
-		add_action("wp_ajax_nopriv_cm_comment_update", [$this, "cmCommentsUpdate"]);
+		add_action("wp_ajax_cm_comment_update", [$this, "comments_update"]);
+		add_action("wp_ajax_nopriv_cm_comment_update", [$this, "comments_update"]);
 
-		add_action("wp_ajax_cm_comment_update_subcategory", [$this, "cmCommentsUpdateSubcategory"]);
-		add_action("wp_ajax_nopriv_cm_comment_update_subcategory", [$this, "cmCommentsUpdateSubcategory"]);
+		add_action("wp_ajax_cm_comment_update_subcategory", [$this, "comments_update_subcategory"]);
+		add_action("wp_ajax_nopriv_cm_comment_update_subcategory", [$this, "comments_update_subcategory"]);
 		//===== END Ajax calls =====
 
 		add_action('wp_enqueue_scripts', function () {
@@ -87,14 +88,14 @@ class Comment_Manager
 		$this->options = get_option('cm_plugin_options');
 
 		//Init all addons
-		$this->loadAddons();
+		$this->load_addons();
 	}
 
 
 	/**
 	 * Load all addons in the folder
 	 */
-	function loadAddons()
+	function load_addons()
 	{
 		$allFolders = glob(CM_ADDONS_PATH . "*", GLOB_ONLYDIR);
 
@@ -114,7 +115,7 @@ class Comment_Manager
 	/**
 	 * @return array List of addons for the comment plugin
 	 */
-	function getAddonsList()
+	function get_addons_list()
 	{
 		return $this->addons;
 	}
@@ -123,7 +124,7 @@ class Comment_Manager
 	/**
 	 * Customized options for comment manager plugin
 	 */
-	function getOptions()
+	function get_options()
 	{
 		return $this->options;
 	}
@@ -132,13 +133,13 @@ class Comment_Manager
 	/**
 	 * We must integrate in comments templare scheme
 	 */
-	function checkCommentTemplate()
+	function check_comment_template()
 	{
 		if (! empty($this->options) && is_array($this->options) && $this->options['cm_option_use_custom_template'] == '1') {
 
 			//New version of WP (With blocks)
-			add_filter('pre_render_block', [$this, 'overrideCommentsBlock'], 10, 2);
-			add_filter('comments_template', [$this, 'renderCustomTemplate'], 20);
+			add_filter('pre_render_block', [$this, 'override_comments_block'], 10, 2);
+			add_filter('comments_template', [$this, 'render_custom_template'], 20);
 		}
 	}
 
@@ -146,7 +147,7 @@ class Comment_Manager
 	/**
 	 * We need to override comment blcok render for new WP versions (after 2023)
 	 */
-	function overrideCommentsBlock($pre_render, $parsed_block)
+	function override_comments_block($pre_render, $parsed_block)
 	{
 		if ($parsed_block['blockName'] === 'core/comments') {
 			ob_start();
@@ -159,7 +160,7 @@ class Comment_Manager
 	/**
 	 * Render our custom template for comments instead of default WP and active theme
 	 */
-	function renderCustomTemplate()
+	function render_custom_template()
 	{
 		return CM_TEMPLATES_PATH . 'comments.php';
 	}
@@ -168,9 +169,9 @@ class Comment_Manager
 	/**
 	 * Modifies title based on the custom options for active page/post
 	 */
-	function cmMainTitleFilter($title)
+	function main_title_filter($title)
 	{
-		$options = $this->getCustomOptionsForPost(get_the_ID());
+		$options = $this->get_custom_options_for_post(get_the_ID());
 
 		if (! empty($options['settings']) && $options['settings']->titles) {
 			if ($options['settings']->titles->main != "") {
@@ -185,9 +186,9 @@ class Comment_Manager
 	/**
 	 * Modifies title based on the custom options for active page/post
 	 */
-	function cmMainFormTitleFilter($title, $args)
+	function main_form_title_filter($title, $args)
 	{
-		$options = $this->getCustomOptionsForPost($args['post_id']);
+		$options = $this->get_custom_options_for_post($args['post_id']);
 
 		if (! empty($options['settings']) && $options['settings']->titles) {
 			return $options['settings']->titles->main_form ?? "";
@@ -200,9 +201,9 @@ class Comment_Manager
 	/**
 	 * Modifies title based on the custom options for active page/post
 	 */
-	function cmReplyFormTitleFilter($title, $args)
+	function reply_form_title_filter($title, $args)
 	{
-		$options = $this->getCustomOptionsForPost($args['post_id']);
+		$options = $this->get_custom_options_for_post($args['post_id']);
 
 		if (! empty($options['settings']) && $options['settings']->titles) {
 			return $options['settings']->titles->reply_form ?? "";
@@ -215,9 +216,9 @@ class Comment_Manager
 	/**
 	 * Modifies title based on the custom options for active page/post
 	 */
-	function cmMainFormPlaceholderFilter($title, $args)
+	function main_form_placeholder_filter($title, $args)
 	{
-		$options = $this->getCustomOptionsForPost($args['post_id']);
+		$options = $this->get_custom_options_for_post($args['post_id']);
 
 		if (! empty($options['settings']) && $options['settings']->titles) {
 			return $options['settings']->titles->main_placeholder ?? "";
@@ -230,9 +231,9 @@ class Comment_Manager
 	/**
 	 * Modifies title based on the custom options for active page/post
 	 */
-	function cmReplyFormPlaceholderFilter($title, $args)
+	function reply_form_placeholder_filter($title, $args)
 	{
-		$options = $this->getCustomOptionsForPost($args['post_id']);
+		$options = $this->get_custom_options_for_post($args['post_id']);
 
 		if (! empty($options['settings']) && $options['settings']->titles) {
 			return $options['settings']->titles->reply_placeholder ?? "";
@@ -250,7 +251,7 @@ class Comment_Manager
 	 * 
 	 * @return array Set of customization options for given post ID
 	 */
-	function getCustomOptionsForPost($postID = null)
+	function get_custom_options_for_post($postID = null)
 	{
 		$result = [];
 
@@ -290,7 +291,7 @@ class Comment_Manager
 	/**
 	 * Ajax call that will update category and type of existing comments
 	 */
-	function cmCommentsUpdate()
+	function comments_update()
 	{
 		$type = $_REQUEST['type'];
 		$postID = 0;
@@ -371,7 +372,7 @@ class Comment_Manager
 	/**
 	 * Update comment subcategory
 	 */
-	public function cmCommentsUpdateSubcategory()
+	public function comments_update_subcategory()
 	{
 		$result = [
 			"type" => "success",
@@ -451,12 +452,12 @@ class Comment_Manager
 	/**
 	 * Custom save function to enable comment types and comment groups
 	 */
-	public function cmSaveComment()
+	public function save_comment()
 	{
 		$postID = intval($_REQUEST['post_id']);
 		$parentID = (empty($_REQUEST['parent_id']) ? 0 : intval($_REQUEST['parent_id']));
 		$message = (empty($_REQUEST['message']) ? "" : sanitize_text_field($_REQUEST['message']));
-		$options = $this->getCustomOptionsForPost($postID);
+		$options = $this->get_custom_options_for_post($postID);
 		$result = [];
 
 		if (is_user_logged_in()) {

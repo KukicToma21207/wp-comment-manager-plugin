@@ -4,18 +4,6 @@
  */
 class Comment_Query {
 
-    protected static Comment_Query|null $instance = null;
-
-    public static function instance(): Comment_Query|null {
-        if (self::$instance === null) {
-            self::$instance = new Comment_Query();
-        }
-        return self::$instance;
-    }
-
-    protected function __construct() {}
-
-
     public function get_query_args($postID,  $type, $category, $subCategory, $count = false, $parentID = null, $maxComments = -1, $page = -1) {
         $commentArgs = [
 			'post_id' => $postID,
