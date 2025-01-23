@@ -497,7 +497,8 @@ class Comment_Manager
 			update_comment_meta($comment_id, 'cm_category', $options['settings']->category);
 		}
 
-		$result = ["type" => "success", "data" => ["comment" => Comment_Archive::instance()->get_comments($comment_id)], "message" => "Comment saved successfully."];
+		$CA = new Comment_Archive();
+		$result = ["type" => "success", "data" => ["comment" => $CA->get_comments($comment_id)], "message" => "Comment saved successfully."];
 		return json_encode($result);
 	}
 }
